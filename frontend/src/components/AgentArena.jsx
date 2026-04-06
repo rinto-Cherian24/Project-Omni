@@ -1,10 +1,13 @@
 import React from 'react';
 import { agents } from '../data/mockData';
 
-const AgentArena = ({ activeLines }) => {
+const AgentArena = ({ activeSpeaker }) => {
+  const getAgentNode = (id) => agents.find(a => a.id === id);
+  const sender = activeSpeaker ? getAgentNode(activeSpeaker) : null;
+  const receivers = sender ? agents.filter(a => a.id !== activeSpeaker) : [];
   return (
     <div className="left-panel glass-panel">
-      <h2 style={{ position: 'absolute', top: '1.5rem', left: '2rem', zIndex: 10, color: 'rgba(255,255,255,0.7)', fontWeight: 500 }}>
+      <h2 style={{ position: 'absolute', top: '1.5rem', left: '2rem', zIndex: 10, color: 'var(--text-main)', fontWeight: 600 }}>
         Praxis Copilot Arena
       </h2>
       
@@ -26,28 +29,18 @@ const AgentArena = ({ activeLines }) => {
             </linearGradient>
           </defs>
           
-          {/* Draw lines between nodes when simulating */}
-          <line 
-            x1="20%" y1="70%" x2="50%" y2="20%" 
-            stroke="url(#lineGrad1)" strokeWidth="3" 
-            strokeDasharray="8 8"
-            opacity={activeLines ? 0.6 : 0.05}
-            style={{ transition: 'opacity 0.5s ease', animation: activeLines ? 'dash 1s linear infinite' : 'none' }} 
-          />
-          <line 
-            x1="50%" y1="20%" x2="80%" y2="70%" 
-            stroke="url(#lineGrad2)" strokeWidth="3" 
-            strokeDasharray="8 8"
-            opacity={activeLines ? 0.6 : 0.05}
-            style={{ transition: 'opacity 0.5s ease 0.2s', animation: activeLines ? 'dash 1s linear infinite reverse' : 'none' }} 
-          />
-          <line 
-            x1="80%" y1="70%" x2="20%" y2="70%" 
-            stroke="url(#lineGrad3)" strokeWidth="3" 
-            strokeDasharray="8 8"
-            opacity={activeLines ? 0.6 : 0.05}
-            style={{ transition: 'opacity 0.5s ease 0.4s', animation: activeLines ? 'dash 1.5s linear infinite' : 'none' }} 
-          />
+          {/* Draw dynamic broadcast lines from active speaker */}
+          {sender && receivers.map((receiver) => (
+             <line 
+                key={`${sender.id}-${receiver.id}`}
+                x1={`${sender.x}%`} y1={`${sender.y}%`} 
+                x2={`${receiver.x}%`} y2={`${receiver.y}%`} 
+                stroke={sender.color} 
+                strokeWidth="2" 
+                strokeDasharray="6 6"
+                style={{ animation: 'dashBlast 0.6s linear infinite' }} 
+              />
+          ))}
         </svg>
 
         {/* Render Agents */}
@@ -64,7 +57,7 @@ const AgentArena = ({ activeLines }) => {
               alignItems: 'center',
               gap: '0.8rem',
               zIndex: 2,
-              transition: 'transform 0.3s ease'
+              animation: activeSpeaker === agent.id ? `computeNode 1s ease-in-out infinite` : `floatNode ${4 + agent.id.length % 3}s ease-in-out infinite alternate`,
             }}
           >
             <div 
@@ -73,26 +66,34 @@ const AgentArena = ({ activeLines }) => {
                 height: '64px',
                 borderRadius: '50%',
                 background: agent.color,
-                boxShadow: activeLines ? `0 0 25px ${agent.color}` : `0 0 10px rgba(0,0,0,0.5)`,
+                boxShadow: activeSpeaker === agent.id ? `0 0 15px ${agent.color}, 0 0 0 4px ${agent.color}40` : `0 2px 8px rgba(0,0,0,0.15)`,
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                border: '3px solid rgba(255,255,255,0.1)',
+                border: '3px solid #ffffff',
                 transition: 'all 0.4s ease',
-                transform: activeLines ? 'scale(1.1)' : 'scale(1)'
               }}
             >
               {/* Pulse wave when active */}
-              {activeLines && (
+              {activeSpeaker === agent.id && (
                 <div style={{
                   position: 'absolute', width: '100%', height: '100%', borderRadius: '50%',
-                  border: `1px solid ${agent.color}`, animation: 'pulse 1.5s infinite'
+                  border: `2px solid ${agent.color}`, animation: 'pulse 1s infinite'
                 }} />
               )}
             </div>
-            <div style={{ textAlign: 'center', background: 'rgba(0,0,0,0.4)', padding: '0.2rem 0.6rem', borderRadius: '4px', backdropFilter: 'blur(4px)' }}>
-              <div style={{ fontWeight: 600, color: 'white', fontSize: '0.9rem' }}>{agent.label}</div>
-              <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>{agent.role}</div>
+
+            {/* Typing Indicator Box */}
+            {activeSpeaker === agent.id && (
+              <div className="typing-bubble">
+                <div className="typing-dot" style={{background: agent.color}}></div>
+                <div className="typing-dot" style={{background: agent.color}}></div>
+                <div className="typing-dot" style={{background: agent.color}}></div>
+              </div>
+            )}
+            <div style={{ textAlign: 'center', background: '#f8fafc', border: '1px solid var(--border-color)', padding: '0.3rem 0.8rem', borderRadius: '6px', boxShadow: '0 1px 3px rgba(0,0,0,0.05)' }}>
+              <div style={{ fontWeight: 600, color: 'var(--text-main)', fontSize: '0.85rem' }}>{agent.label}</div>
+              <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', marginTop: '0.1rem' }}>{agent.role}</div>
             </div>
           </div>
         ))}

@@ -1,7 +1,8 @@
 import React, { useRef, useEffect } from 'react';
-import { mockContextMemory, agents } from '../data/mockData';
+import { agents } from '../data/mockData';
+import AmbientListener from './AmbientListener';
 
-const ContextPanel = ({ prompt, setPrompt, isSimulating, onSimulate, visibleMessages }) => {
+const ContextPanel = ({ prompt, setPrompt, isSimulating, onSimulate, visibleMessages, contextMemory, onTranscriptAdded }) => {
   const scrollRef = useRef(null);
 
   useEffect(() => {
@@ -13,16 +14,19 @@ const ContextPanel = ({ prompt, setPrompt, isSimulating, onSimulate, visibleMess
   return (
     <div className="right-panel glass-panel">
       <div className="context-memory-section">
-        <h2>
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
-          Context Memory
-        </h2>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+          <h2 style={{ margin: 0 }}>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+            Context Memory
+          </h2>
+          <AmbientListener onTranscriptAdded={onTranscriptAdded} />
+        </div>
         <div className="context-cards">
-          {mockContextMemory.map(mem => (
+          {contextMemory.map(mem => (
             <div key={mem.id} className="context-card">
               <div className="context-card-header">
                 <span className={`badge ${mem.type}`}>{mem.type}</span>
-                <span style={{color: 'rgba(255,255,255,0.3)'}}>{mem.time}</span>
+                <span style={{color: 'var(--text-muted)'}}>{mem.time}</span>
               </div>
               <div style={{fontWeight: 500, margin: '0.3rem 0', color: 'var(--text-main)'}}>{mem.topic}</div>
               <div className="context-card-desc">{mem.content}</div>
@@ -36,19 +40,19 @@ const ContextPanel = ({ prompt, setPrompt, isSimulating, onSimulate, visibleMess
           ref={scrollRef}
           style={{
             flex: 1, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '0.8rem',
-            background: 'rgba(0,0,0,0.1)', borderRadius: '8px', padding: '1rem', border: '1px solid var(--border-color)',
+            background: '#f8fafc', borderRadius: '6px', padding: '1rem', border: '1px solid var(--border-color)',
             animation: 'fadeIn 0.2s ease-out'
           }}
         >
-          <div style={{color: 'var(--text-muted)', fontSize: '0.8rem', textTransform: 'uppercase', marginBottom: '0.2rem'}}>Active Conversation</div>
+          <div style={{color: 'var(--text-muted)', fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', marginBottom: '0.2rem'}}>Active Conversation</div>
           {visibleMessages.map((msg, idx) => {
             const agentInfo = agents.find(a => a.id === msg.agentId);
             return (
               <div key={idx} style={{ display: 'flex', flexDirection: 'column', gap: '0.3rem', animation: 'fadeIn 0.3s ease-out' }}>
-                <div style={{ fontWeight: 600, fontSize: '0.85rem', color: agentInfo?.color || '#fff' }}>
+                <div style={{ fontWeight: 600, fontSize: '0.8rem', color: agentInfo?.color || 'var(--text-main)' }}>
                   {msg.agentName}
                 </div>
-                <div style={{ background: 'rgba(255,255,255,0.05)', padding: '0.8rem', borderRadius: '8px', color: '#f0f0f5', fontSize: '0.95rem' }}>
+                <div style={{ background: '#ffffff', border: '1px solid var(--border-color)', padding: '0.8rem', borderRadius: '6px', color: 'var(--text-main)', fontSize: '0.9rem', boxShadow: '0 1px 2px rgba(0,0,0,0.02)' }}>
                   {msg.text}
                 </div>
               </div>

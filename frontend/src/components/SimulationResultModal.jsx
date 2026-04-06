@@ -9,8 +9,8 @@ const SimulationResultModal = ({ onClose, onRewrite }) => {
         
         <div className="risk-score">
           <div>
-            <div style={{color: 'var(--text-muted)', fontSize: '0.85rem', textTransform: 'uppercase', marginBottom: '0.2rem'}}>Systemic Risk Score</div>
-            <div style={{color: 'white', fontSize: '1.1rem'}}>{mockSimulationResult.sayDoGap}</div>
+            <div style={{color: 'var(--text-muted)', fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', marginBottom: '0.2rem'}}>Systemic Risk Score</div>
+            <div style={{color: 'var(--text-main)', fontSize: '1rem', fontWeight: 500}}>{mockSimulationResult.sayDoGap}</div>
           </div>
           <div className={`risk-value ${mockSimulationResult.riskLevel}`}>
             {mockSimulationResult.riskScore}%

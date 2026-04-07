@@ -18,9 +18,6 @@ Google AI is integrated into the core of Project Omni as the central "Brain":
 2. **Multi-Agent Simulation (Praxis Swarm):** We utilize Gemini to concurrently power three distinct AI personas (Customer, Finance, and Legal/Brand). When a new action is proposed, Gemini intelligently simulates a debate between these personas, synthesizing their real-time feedback into a final Risk Score and suggesting safer action variants.
 
 ## Proof of Google AI Usage
-Attach screenshots in a `/proof` folder:
-
-![AI Proof](./proof/ai-proof.png)
 
 ## Screenshots
 
@@ -28,7 +25,7 @@ Attach screenshots in a `/proof` folder:
 ![Screenshot 2](./proof/screenshot2.png)
 
 ## Demo Video
-[Watch Demo](#) *(Upload your demo video to Google Drive and paste the shareable link here)*
+[Watch Demo](#) *(https://drive.google.com/drive/folders/1PIg69rjF-MnUC-JSNNcDp0YgIh59ab4B?usp=sharing)*
 
 ## Installation Steps
 # Clone the repository
